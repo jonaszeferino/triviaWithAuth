@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/Home.module.css";
-import SignInButton from "../components/SignInButton";
+import { signIn } from "next-auth/react";
 
 export default function Reservations() {
   const [answers, setAnswers] = useState({ questions: [] });
@@ -140,6 +140,7 @@ export default function Reservations() {
     <div>
       <h1 className={styles.grid}>Trivia</h1>
       <h2 className={styles.grid}>
+        
         <br />
         <div>
           <button className={styles.button} onClick={apiCall}>
@@ -150,8 +151,11 @@ export default function Reservations() {
             Options
           </button>
           <div>
-        <h1>Login page</h1>
-        <SignInButton />
+          <button onClick={() =>{
+          signIn()
+        }}>Login</button>
+
+        
       </div>
 
           {showCategoryOptions && (
