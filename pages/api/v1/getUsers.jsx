@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const connection = await connectionRdsMySql();
 
   try {
-    const query = `SELECT DISTINCT email FROM users where email='${email}'`
+    const query = `SELECT DISTINCT email, password FROM users where email='${email}'`
                   
     console.log('aqui', query)
     const values = [];

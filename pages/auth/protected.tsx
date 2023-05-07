@@ -11,13 +11,13 @@ const Protected: NextPage = (): JSX.Element => {
     if (status === "unauthenticated") Router.replace("/auth/signin");
   }, [status]);
   if (status === "authenticated")
-    return (<div>
-      This page is protecded!
-      {JSON.stringify(data.user, null, 2)}
+    return (
+      <div>
+        This page is protecded!
+        {JSON.stringify(data.user, null, 2)}
+      </div>
+    );
+  return <div>Loading</div>;
+};
 
-    </div>);
-  return <div>Loading</div>
-
-}
-
-export default Protected
+export default Protected;
