@@ -13,13 +13,16 @@ export default function LoginPage() {
       redirect: false,
       ...credentials
     })
-
+  
     if (result.error) {
       // Tratar erro de autenticação
       console.error(result.error)
+  
+      // Redirecionar para a página de usuário não logado
+      router.push('/indexNaoLogado')
     } else {
       // Redirecionar para a página principal após o login bem-sucedido
-      router.push('/')
+      router.push('/indexLogado')
     }
   }
 

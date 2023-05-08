@@ -12,6 +12,7 @@ const options = {
       authorize: async (credentials) => {
         // Implemente sua lógica de autenticação aqui
         if (credentials.username === 'jonas' && credentials.password === '123') {
+          console.log('credenciais Corretas')
           return Promise.resolve(credentials)
         } else {
           return Promise.reject(new Error('Credenciais inválidas'))
@@ -24,21 +25,22 @@ const options = {
   },
   callbacks: {
     async signIn(user, account, profile) {
-      // Adicione aqui qualquer lógica personalizada que você queira executar após o login bem-sucedido
-      return Promise.resolve(true)
-    },
-    async redirect(url, baseUrl) {
       // Redirecionamento personalizado após o login
-      return Promise.resolve(baseUrl)
+      // nao entendi exatametne o que é feito aqui, pois o redirect acontece na tela de login
+      if (user) {
+        return Promise.resolve('http://localhost:3000/indexLogado'); // Redireciona para a página de usuário logado
+      } else {
+        return Promise.resolve('http://localhost:3000/indexNaoLogado'); // Redireciona para a página de usuário não logado
+      }
     },
     async session(session, user) {
       // Aqui você pode adicionar ou modificar dados da sessão do usuário
-      session.user = user
-      return Promise.resolve(session)
+      session.user = user;
+      return Promise.resolve(session);
     },
     async jwt(token, user, account, profile, isNewUser) {
       // Aqui você pode adicionar ou modificar dados no token JWT
-      return Promise.resolve(token)
+      return Promise.resolve(token);
     }
   }
 }
