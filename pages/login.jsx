@@ -1,30 +1,44 @@
 import { useState } from 'react'
 import { useSession, signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import styles from '../styles/LoginPage.module.css'
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Text,
+  ChakraProvider
+} from '@chakra-ui/react';
 
 export default function LoginPage() {
   const { data: session, status: sessionStatus } = useSession()
   const [credentials, setCredentials] = useState({ username: '', password: '' })
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false)
+
   const router = useRouter()
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    setLoading(true)
+    e.preventDefault();
     const result = await signIn('credentials', {
       redirect: false,
-      ...credentials
-    })
+      ...credentials,
+    });
   
     if (result.error) {
-      // Tratar erro de autenticação
-      console.error(result.error)
-  
-      // Redirecionar para a página de usuário não logado
-      router.push('/indexNaoLogado')
+      // Exibir a mensagem de erro na tela
+      setError(result.error.message);
+      setLoading(false)
     } else {
       // Redirecionar para a página principal após o login bem-sucedido
-      router.push('/indexLogado')
+      setLoading(false)
+      router.push('/indexLogado');
     }
-  }
+  };
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value })
@@ -40,13 +54,40 @@ export default function LoginPage() {
   }
 
   return (
-    <div>
-      <h1>Login</h1>
+    <>
+    <ChakraProvider>
+    <Box p={4} maxWidth="md" mx="auto">
+      <Text fontSize="2xl" mb={4} textAlign="center">
+        Login
+      </Text>
       <form onSubmit={handleSubmit} method="post">
-        <input type="text" name="username" placeholder="Username" onChange={handleChange} />
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} />
-        <button type="submit">Login</button>
+        <Stack spacing={4}>
+          <FormControl>
+            <FormLabel>Username</FormLabel>
+            <Input
+              type="text"
+              name="username"
+              placeholder="Username"
+              onChange={handleChange}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Password</FormLabel>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              onChange={handleChange}
+            />
+          </FormControl>
+          <Button type="submit" colorScheme="blue" isLoading={loading}>
+            Login
+          </Button>
+          {error && <Text color="red.500">{error}</Text>}
+        </Stack>
       </form>
-    </div>
+    </Box>
+    </ChakraProvider>
+    </>
   )
 }
