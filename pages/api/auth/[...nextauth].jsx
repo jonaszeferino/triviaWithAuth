@@ -8,16 +8,38 @@ const options = {
       credentials: {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" }
+
       },
+      
       authorize: async (credentials) => {
-        // Implemente sua lógica de autenticação aqui
-        if (credentials.username === 'jonas' && credentials.password === '123') {
-          console.log('credenciais Corretas')
-          return Promise.resolve(credentials)
-        } else {
-          return Promise.reject(new Error('Credenciais inválidas'))
+
+        try {
+          const response = await fetch("http://localhost:3000/api/v1/getUsers", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: credentials.username,
+              password: credentials.password,
+            }),
+          });
+          
+          const data = await response.json();
+          console.log(data)
+          if (response.ok && data.results === 'pass') {
+         
+            return Promise.resolve(credentials);
+          } else {
+         
+            return Promise.reject(new Error('Credenciais inválidas'));
+          }
+        } catch (error) {
+         
+          return Promise.reject(new Error('Erro ao verificar as credenciais'));
         }
       }
+
     })
   ],
   pages: {
