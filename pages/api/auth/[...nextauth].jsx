@@ -11,8 +11,10 @@ const options = {
       },
       authorize: async (credentials) => {
         try {
+          let sqlDB = "http://localhost:3000/api/v1/getUsers"
+          let mongoDB = "http://localhost:3000/api/v1/getUsersMongo"
           const response = await fetch(
-            "http://localhost:3000/api/v1/getUsers",
+            mongoDB,
             {
               method: "POST",
               headers: {
