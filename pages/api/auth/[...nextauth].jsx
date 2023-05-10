@@ -1,7 +1,11 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { useState } from "react";
+
 
 const options = {
+  
+
   providers: [
     Credentials({
       name: "Credentials",
@@ -10,6 +14,7 @@ const options = {
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
+        
         try {
           let sqlDB = "http://localhost:3000/api/v1/getUsers"
           let mongoDB = "http://localhost:3000/api/v1/getUsersMongo"
@@ -31,6 +36,7 @@ const options = {
           if (response.ok && data.result === "pass") {
             return Promise.resolve(data);
           } else {
+            
             return Promise.reject(new Error("Credenciais inválidas"));
           }
         } catch (error) {

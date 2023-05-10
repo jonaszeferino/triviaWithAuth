@@ -46,6 +46,7 @@ export default function LoginPage() {
       // Exibir a mensagem de erro na tela
       setError(result.error.message);
       setLoading(false);
+      router.push("/indexNaoLogado");
     } else {
       // Redirecionar para a página principal após o login bem-sucedido
       setLoading(false);
@@ -67,7 +68,7 @@ export default function LoginPage() {
 
   const SaveUser= async () => {
     try {
-      const response = await fetch("/api/v1/postUsers", {
+      const response = await fetch("/api/v1/postUsersMongo", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,6 +122,8 @@ export default function LoginPage() {
           ) : (
             ""
           )}
+
+
 
           <form onSubmit={handleSubmit} method="post">
             {signScreen == true ? (
@@ -213,7 +216,7 @@ export default function LoginPage() {
                 />
               </FormControl>
               <Button
-                type="submit"
+                
                 colorScheme="blue"
                 isLoading={loading}
                 isDisabled={disableButton}
