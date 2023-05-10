@@ -1,12 +1,31 @@
 import { useState } from "react";
-import styles from "../styles/Home.module.css";
+import { useSession, signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Text,
+  ChakraProvider,
+  Link,
+} from "@chakra-ui/react";
 
-export default function teste() {
-  const [answers, setAnswers] = useState({ questions: [] });
+export default function LoginPage() {
+  const { data: session, status: sessionStatus } = useSession();
+  const router = useRouter();
 
   return (
-    <div>
-      <h1>Hello world! Logado!</h1>
-    </div>
+    <>
+      <ChakraProvider>
+        <Box p={4} maxWidth="md" mx="auto">
+          <Stack spacing={4}>
+            <Text textAlign="center">Conectado! Parabens</Text>
+          </Stack>
+        </Box>
+      </ChakraProvider>
+    </>
   );
 }
