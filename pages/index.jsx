@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
 import styles from "../styles/Home.module.css";
+import {
+  
+  ChakraProvider,
+  
+} from "@chakra-ui/react";
 
 export default function Reservations() {
   const [answers, setAnswers] = useState({ questions: [] });
@@ -151,8 +156,9 @@ export default function Reservations() {
   ];
 
   return (
+<><ChakraProvider>
     <div>
-      <h1 className={styles.grid}>Trivia</h1>
+      <h1 className={styles.grid}></h1>
       <h2 className={styles.grid}>
         <br />
         <div>
@@ -358,5 +364,7 @@ export default function Reservations() {
         </div>
       </div>
     </div>
+    </ChakraProvider>
+    </>
   );
 }
