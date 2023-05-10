@@ -18,7 +18,12 @@ export default function Navbar() {
       </li>
       {session ? (
         <li>
-          <p>Olá, {session.user.name}</p>
+          <p>
+            {" "}
+            {session && session.user && (
+              <span>Bem-vindo, {session.user.name}</span>
+            )}
+          </p>
         </li>
       ) : (
         <li>

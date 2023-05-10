@@ -65,7 +65,7 @@ export default function LoginPage() {
     return null;
   }
 
-  const apiCallChannels = async () => {
+  const SaveUser= async () => {
     try {
       const response = await fetch("/api/v1/postUsers", {
         method: "POST",
@@ -73,12 +73,13 @@ export default function LoginPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: stockUser,
-          name: textSpanEnd,
-          password: teste,
+          name: newName,
+          email: newEmail,
+          password: newPassword,
         }),
       });
       const data = await response.json();
+      console.log(data)
       return data;
     } catch (error) {
       console.error(error);
@@ -104,10 +105,15 @@ export default function LoginPage() {
     }
   };
 
+  console.log(session)
+
   return (
     <>
       <ChakraProvider>
         <Box p={4} maxWidth="md" mx="auto">
+        {session && session.user && (
+       <Text>Bem-vindo, {session.user.name}</Text>
+)}
           {signScreen == true ? (
             <Text fontSize="2xl" mb={4} textAlign="center">
               Login
@@ -211,6 +217,7 @@ export default function LoginPage() {
                 colorScheme="blue"
                 isLoading={loading}
                 isDisabled={disableButton}
+                onClick={SaveUser}
               >
                 Salvar
               </Button>
