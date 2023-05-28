@@ -1,19 +1,21 @@
 import client from "../../../mongoConnection";
 
 export default async function handler(req, res) {
-  const { name, email, password } = req.body.userData;
-  const collection = client.db("trivia").collection("user");
+  const { name, incidents, strikePoints } = req.body;
+  const collection = client.db("strikeManager").collection("incidents");
 
   try {
     const result = await collection.insertOne({
       name: name ? name : null,
-      email: email ? email : null,
-      password: password ? password : null,
+      incidents: incidents ? incidents : null,
+      strikePoints: strikePoints ? strikePoints : null,
     });
+
+    
 
     console.log(result);
 
-    res.status(200).json({ message: "Usuário inserido com sucesso" });
+    res.status(200).json({ message: "Strike Inserido!" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

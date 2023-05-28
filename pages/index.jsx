@@ -1,370 +1,229 @@
 import { useState, useEffect } from "react";
-import styles from "../styles/Home.module.css";
 import {
-  
+  FormControl,
+  FormLabel,
+  Select,
+  Stack,
   ChakraProvider,
-  
+  Center,
+  Button,
+  Text,
+  Image,
+  Grid,
 } from "@chakra-ui/react";
 
-export default function Reservations() {
-  const [answers, setAnswers] = useState({ questions: [] });
-  const [shuffledAnswers, setShuffledAnswers] = useState([]);
-  const [resultsAnswer, setResultsAnswer] = useState("");
-  const [categories, setCategories] = useState("");
-
-  const [selectedDifficulties, setSelectedDifficulties] = useState([]);
-
-  const [selectedAnswer, setSelectedAnswer] = useState("");
-  const [resultado, setResultado] = useState("");
-  const [totalQuestions, setTotalQuestions] = useState(0);
-  const [totalWrongQuestions, setTotalWrongQuestions] = useState(0);
-  const [totalCorrectQuestions, setTotalCorrectQuestions] = useState(0);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [isEnabled,setIsEnabled] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [isClickedA, setIsClickedA] = useState("");
-  const [isClickedB, setIsClickedB] = useState("");
-  const [isClickedC, setIsClickedC] = useState("");
-  const [isClickedD, setIsClickedD] = useState("");
-
-  const [showCategoryOptions, setShowCategoryOptions] = useState(true);
-
-
-  const toggleCategoryOptions = () => setShowCategoryOptions((prev) => !prev);
-
-  const apiCall = () => {
-    setIsEnabled(false);
-    setIsClickedA("");
-    setIsClickedB("");
-    setIsClickedC("");
-    setIsClickedD("");
-    let choice;
-    if (selectedDifficulties === "easy") {
-      choice = "&difficulty=easy";
-    } else if (selectedDifficulties === "medium") {
-      choice = "&difficulty=medium";
-    } else if (selectedDifficulties === "hard") {
-      choice = "&difficulty=hard";
-    } else {
-      choice = "";
-    }
-
-    const url = `https://the-trivia-api.com/api/questions?limit=1&categories=${selectedCategories.join(
-      ","
-    )}${choice}`;
-    setResultsAnswer("");
-    setSelectedAnswer("");
-    setResultado("");
-    setTotalQuestions(totalQuestions + 1);
-
-    console.log("o que chamou: " + url);
-
-    fetch(url)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw new Error("Dados Incorretos");
-        }
-      })
-      .then((result) => {
-        setAnswers({
-          questions: result.map((question) => ({
-            id: question.id,
-            question: question.question,
-            correctAnswer: question.correctAnswer,
-            incorrectAnswers: question.incorrectAnswers,
-            difficulty: question.difficulty,
-            category: question.category,
-          })),
-        });
-      })
-      .catch((error) => setError(true));
-  };
+export default function StrikeManager() {
+  const [isClient, setIsClient] = useState(false);
+  const [nome, setNome] = useState("Glacial");
+  const [ocorrencia, setOcorrencia] = useState("");
+  const [strikeValue, setStrikeValue] = useState(0);
+  const [isNew, setIsNew] = useState(true);
+  const [strike1Clicked, setStrike1Clicked] = useState(false);
+  const [strike2Clicked, setStrike2Clicked] = useState(false);
+  const [strike3Clicked, setStrike3Clicked] = useState(false);
 
   useEffect(() => {
-    const allAnswers = [
-      answers.questions[0]?.incorrectAnswers[0],
-      answers.questions[0]?.incorrectAnswers[1],
-      answers.questions[0]?.incorrectAnswers[2],
-      answers.questions[0]?.correctAnswer,
-    ];
-    const newShuffledAnswers = allAnswers
-      .slice()
-      .sort(() => Math.random() - 0.5);
-    setShuffledAnswers(newShuffledAnswers);
-  }, [answers]);
+    setIsClient(true);
+  }, []);
 
-  function getResultAnswer(recebido, questao) {
-    if (recebido === answers.questions[0]?.correctAnswer) {
-      setIsEnabled(true);
-      setResultsAnswer(
-        <span
-          style={{
-            color: "white",
-            fontWeight: "bold",
-            backgroundColor: "green",
-            borderRadius: "7px",
-            padding: "7px",
-          }}
-        >
-          Correct!
-        </span>
-      );
-      setTotalCorrectQuestions(totalCorrectQuestions + 1);
-    } else {
-      setIsEnabled(true);
-      setResultsAnswer(
-        <span
-          style={{
-            color: "white",
-            fontWeight: "bold",
-            backgroundColor: "red",
-            borderRadius: "7px",
-            padding: "7px",
-          }}
-        >
-          {questao}: Is The Wrong Choice!. The correct answer is:{" "}
-          {answers.questions[0]?.correctAnswer}
-        </span>
-      );
-      setTotalWrongQuestions(totalWrongQuestions + 1);
+  const apiCall = async () => {
+    try {
+      const response = await fetch("/api/v1/putStrikeManager", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: nome,
+          incident: ocorrencia,
+          strikePoints: strikeValue,
+          
+        }),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
     }
-  }
+  };
 
-  function handleSelectAnswer(answer) {
-    setSelectedAnswer(answer);
-  }
-
-  const categoryOptions = [
-    { name: "arts_and_literature", displayName: "Arts & Literature" },
-    { name: "film_and_tv", displayName: "Cinema & TV" },
-    { name: "food_and_drink", displayName: "Food & Drink" },
-    { name: "general_knowledge", displayName: "General Knowledge" },
-    { name: "geography", displayName: "Geography" },
-    { name: "history", displayName: "History" },
-    { name: "music", displayName: "Music" },
-    { name: "science", displayName: "Science" },
-    { name: "society_and_culture", displayName: "Society & Culture" },
-    { name: "sport_and_leisure", displayName: "Sport & Leisure" },
+  const nomes = [
+    { value: "Giovani", label: "Giovani", imagem: "/imagens/giovani.jpg" },
+    {
+      value: "Guilherme",
+      label: "Guilherme",
+      imagem: "/imagens/guilherme.jpg",
+    },
+    {
+      value: "Jaime",
+      label: "Jaime",
+      imagem: "/imagens/jaime.jpg",
+    },
+    {
+      value: "Jonas",
+      label: "Jonas",
+      imagem: "/imagens/jonas.jpg",
+    },
+    {
+      value: "Leonardo",
+      label: "Leonardo",
+      imagem: "/imagens/leonardo.jpg",
+    },
+    {
+      value: "Murilo",
+      label: "Murilo",
+      imagem: "/imagens/murilo.jpg",
+    },
+    {
+      value: "Veller",
+      label: "Veller",
+      imagem: "/imagens/veller.jpg",
+    },
+    {
+      value: "Vitor",
+      label: "Vitor",
+      imagem: "/imagens/vitor.jpg",
+    },
   ];
 
-  const difficultyOptions = [
-    { name: "easy", displayName: "Easy" },
-    { name: "medium", displayName: "Medium" },
-    { name: "hard", displayName: "Hard" },
+  const categorias = [
+    "Clubista",
+    "Foi Lóqui",
+    "Machista",
+    "Nazista",
+    "Otako",
+    "Repost",
+    "Só Fala De Grêmio",
+    "Só Fala De Inter",
+    "Torce Pro Boston",
   ];
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setIsNew(false);
+    // Lógica para lidar com o envio do formulário
+  };
+
+  const handleNomeChange = (event) => {
+    setNome(event.target.value);
+  };
+
+  const handleOcorrenciaChange = (event) => {
+    setOcorrencia(event.target.value);
+  };
+
+  const handleStrikeClick1 = () => {
+    setStrikeValue(strikeValue + 1);
+    setStrike1Clicked(true);
+    setIsNew(false);
+  };
+
+  const handleStrikeClick2 = () => {
+    setStrikeValue(strikeValue + 2);
+    setStrike2Clicked(true);
+    setIsNew(false);
+  };
+
+  const handleStrikeClick3 = () => {
+    setStrikeValue(strikeValue + 3);
+    setStrike3Clicked(true);
+    setIsNew(false);
+  };
+
+  const getImagemPorNome = (nome) => {
+    const pessoa = nomes.find((item) => item.value === nome);
+    if (pessoa) {
+      return pessoa.imagem;
+    }
+    return "/imagens/glacial.jpg";
+  };
 
   return (
-<><ChakraProvider>
-    <div>
-      <h1 className={styles.grid}></h1>
-      <h2 className={styles.grid}>
-        <br />
-        <div>
-          <button className={styles.button} onClick={apiCall}>
-            Start
-          </button>
-
-          <button onClick={toggleCategoryOptions} className={styles.button}>
-            Options
-          </button>
-
-          {showCategoryOptions && (
-            <div className="teste">
-              <span>Areas:</span>
-              {categoryOptions.map((category, index) => (
-                <div key={index}>
-                  <input
-                    className={styles.test}
-                    type="checkbox"
-                    id={category.name}
-                    name={category.name}
-                    checked={selectedCategories.includes(category.name)}
-                    onChange={(event) => {
-                      const isChecked = event.target.checked;
-                      setSelectedCategories((prevState) =>
-                        isChecked
-                          ? [...prevState, category.name]
-                          : prevState.filter((c) => c !== category.name)
-                      );
-                    }}
-                  />
-                  <label htmlFor={category.name}>{category.displayName}</label>
-                </div>
-              ))}
-              <span>
-                <span>Difficulty:</span>
-                <div>
-                  {difficultyOptions.map((difficulty, index) => (
-                    <div key={index}>
-                      <input
-                        type="checkbox"
-                        id={difficulty.name}
-                        name={difficulty.name}
-                        checked={selectedDifficulties.includes(difficulty.name)}
-                        onChange={(event) => {
-                          const isChecked = event.target.checked;
-                          setSelectedDifficulties((prevState) =>
-                            isChecked
-                              ? [...prevState, difficulty.name]
-                              : prevState.filter((d) => d !== difficulty.name)
-                          );
-                        }}
-                      />
-                      <label htmlFor={difficulty.name}>
-                        {difficulty.displayName}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </span>
-            </div>
-          )}
-        </div>
-      </h2>
-
-      <div className={styles.grid}>
-        <span>{resultsAnswer}</span>
-      </div>
-      <div className={styles.grid}>
-        <div>
-          <div>
-            {answers.questions.length > 0 && (
-              <div>
-                <div>
-                  <h2>
-                    <button className={styles.card_text} onClick={apiCall}>
-                      Next Question
-                    </button>
-                  </h2>
-                  <h2
-                    className={styles.card_text}
-                    style={{ backgroundColor: "white" }}
+    <ChakraProvider>
+      <Center>
+        <Stack spacing={4} width="600px">
+          <form onSubmit={handleSubmit} method="post">
+            <FormControl>
+              <FormLabel>Elemento</FormLabel>
+              <Select
+                name="nome"
+                placeholder="Selecione o Meliante"
+                onChange={handleNomeChange}
+                value={nome}
+              >
+                {nomes.map((item, index) => (
+                  <option key={index} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Ocorrência</FormLabel>
+              <Select
+                name="ocorrencia"
+                placeholder="Descreva a Ocorrência"
+                onChange={handleOcorrenciaChange}
+                value={ocorrencia}
+              >
+                {categorias.map((categoria, index) => (
+                  <option key={index} value={categoria}>
+                    {categoria}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+            <Center>
+              <form onSubmit={handleSubmit} method="post">
+                {/* ... */}
+                <Center>
+                  <Button
+                    colorScheme={strike1Clicked ? "teal" : "gray"}
+                    onClick={handleStrikeClick1}
+                    disabled={isNew || strike1Clicked}
                   >
-                    {answers.questions[0]?.question}
-                  </h2>
-                  <h5 style={{ textAlign: "center" }}>
-                    <span>
-                      Difficulty:
-                      <strong> {answers.questions[0]?.difficulty} </strong>
-                    </span>{" "}
-                    <span>
-                      Category:{" "}
-                      <strong> {answers.questions[0]?.category}</strong>
-                    </span>
-                    <br />
-                  </h5>
-
-                  <span>
-                    <button
-                      className={styles.button}
-                      style={{ backgroundColor: isClickedA }}
-                      onClick={() => {
-                      getResultAnswer(shuffledAnswers[0], "A");
-                      setIsClickedA("#0070f3");}}
-                      disabled={isEnabled}
-                    >
-                      A
-                    </button>{" "}
-                    <button
-                      className={styles.button_text}
-                      style={{ backgroundColor: isClickedA }}
-                      onClick={() => {
-                        getResultAnswer(shuffledAnswers[0], "A");
-                        setIsClickedA("#0070f3");}}
-                      disabled={isEnabled}
-                    >
-                      {shuffledAnswers[0]}
-                    </button>{" "}
-                  </span>
-                  <br />
-                  <span>
-                    <button
-                      className={styles.button}
-                      style={{ backgroundColor: isClickedB }}
-                      onClick={() => {
-                        getResultAnswer(shuffledAnswers[1], "B");
-                        setIsClickedB("#0070f3");}}
-                      
-                      disabled={isEnabled}
-                    >
-                      B
-                    </button>{" "}
-                    <button
-                      className={styles.button_text}
-                      style={{ backgroundColor: isClickedB }}
-                      onClick={() => {
-                        getResultAnswer(shuffledAnswers[1], "B");
-                        setIsClickedB("#0070f3");}}
-                      disabled={isEnabled}
-                    >
-                      {shuffledAnswers[1]}
-                    </button>{" "}
-                    {/* <span className={styles.card}>{shuffledAnswers[1]}</span> */}
-                  </span>
-                  <br />
-                  <span>
-                    <button
-                      className={styles.button}
-                      style={{ backgroundColor: isClickedC }}
-                      onClick={() => {getResultAnswer(shuffledAnswers[2], "C");
-                      setIsClickedC("#0070f3")}}
-                      disabled={isEnabled}
-                    >
-                      C
-                    </button>{" "}
-                    <button
-                      className={styles.button_text}
-                      style={{ backgroundColor: isClickedC }}
-                      onClick={() => {getResultAnswer(shuffledAnswers[2], "C");
-                      setIsClickedC("#0070f3")}}
-                      disabled={isEnabled}
-                    >
-                      {shuffledAnswers[2]}
-                    </button>{" "}
-                    {/* <span className={styles.card}>{shuffledAnswers[2]}</span> */}
-                  </span>
-                  <br />
-                  <span>
-                    <button
-                      className={styles.button}
-                      style={{ backgroundColor: isClickedD }}
-                      onClick={() => {getResultAnswer(shuffledAnswers[3], "D");
-                      setIsClickedD("#0070f3")}}
-                      disabled={isEnabled}
-                    >
-                      D
-                    </button>{" "}
-                    <button
-                      className={styles.button_text}
-                      style={{ backgroundColor: isClickedD }}
-                      onClick={() => {getResultAnswer(shuffledAnswers[3], "D");
-                      setIsClickedD("#0070f3")}}
-                      disabled={isEnabled}
-                    >
-                      {shuffledAnswers[3]}
-                    </button>{" "}
-                  </span>
-                  <br />
-
-
-
-                  <h5 style={{ textAlign: "center" }}>
-                    <span>
-                      Total: {totalQuestions} Corrects: {totalCorrectQuestions}{" "}
-                      Wrong: {totalWrongQuestions}
-                    </span>
-                  </h5>
-                  <br />
-                </div>
+                    +1 Strike
+                  </Button>
+                  <Button
+                    colorScheme={strike2Clicked ? "teal" : "gray"}
+                    onClick={handleStrikeClick2}
+                    disabled={isNew || strike2Clicked}
+                  >
+                    +2 Strike
+                  </Button>
+                  <Button
+                    colorScheme={strike3Clicked ? "teal" : "gray"}
+                    onClick={handleStrikeClick3}
+                    disabled={isNew || strike3Clicked}
+                  >
+                    +3 Strike
+                  </Button>
+                </Center>
+              </form>
+            </Center>
+          </form>
+          <Center>
+            <Grid templateColumns="auto 1fr" gap={4} alignItems="center">
+              {nome && (
+                <Image
+                  src={getImagemPorNome(nome)}
+                  alt={nome}
+                  boxSize="200px"
+                  objectFit="cover"
+                />
+              )}
+              <div>
+                <Text>Meliante: {nome}</Text>
+                <Text>BO: {ocorrencia}</Text>
+                <Text>Valor do Strike: {strikeValue}</Text>
               </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+            </Grid>
+          </Center>
+          <Button type="submit" colorScheme="teal" disabled={isNew} onClick={apiCall}>
+            Enviar
+          </Button>
+        </Stack>
+      </Center>
     </ChakraProvider>
-    </>
   );
 }
